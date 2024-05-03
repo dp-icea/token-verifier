@@ -1,15 +1,15 @@
 package main
 
 import (
-	"token-signer-validator/httpServer"
-	"token-signer-validator/tokenValidator"
+	"token-verifier/httpServer"
+	"token-verifier/tokenVerifier"
 )
 
 type Server interface {
-	Serve(validator tokenValidator.TokenValidator)
+	Serve(verifier tokenVerifier.TokenVerifier)
 }
 
 func main() {
 	var server Server = httpServer.HttpServer{}
-	server.Serve(tokenValidator.New())
+	server.Serve(tokenVerifier.New())
 }

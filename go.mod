@@ -1,4 +1,4 @@
-module token-signer-validator
+module token-verifier
 
 go 1.21
 

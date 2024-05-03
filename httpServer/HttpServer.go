@@ -3,18 +3,18 @@ package httpServer
 import (
 	"log"
 	"net/http"
-	"token-signer-validator/config"
-	"token-signer-validator/tokenValidator"
+	"token-verifier/config"
+	"token-verifier/tokenVerifier"
 )
 
 type HttpServer struct {
 }
 
 type RequestParser interface {
-	ParseRequest(r *http.Request) (tokenValidator.ValidateTokenRequest, error)
+	ParseRequest(r *http.Request) (tokenVerifier.VerifyTokenRequest, error)
 }
 
-func (h HttpServer) Serve(validator tokenValidator.TokenValidator) {
+func (h HttpServer) Serve(verifier tokenVerifier.TokenVerifier) {
 	conf := config.GetGlobalConfig()
 	var parser RequestParser = HttpRequestParser{}
 
@@ -33,10 +33,10 @@ func (h HttpServer) Serve(validator tokenValidator.TokenValidator) {
 			return
 		}
 
-		tokenValid := validator.ValidateToken(request)
+		tokenValid, msg := verifier.VerifyToken(request)
 
 		if !tokenValid {
-			http.Error(w, "Token signature not valid", 400)
+			http.Error(w, msg, 400)
 		}
 
 		return
