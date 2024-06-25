@@ -1,7 +1,6 @@
 package httpServer
 
 import (
-	"encoding/json"
 	"net/http"
 	"token-verifier/tokenVerifier"
 )
@@ -9,9 +8,11 @@ import (
 type HttpRequestParser struct {
 }
 
-func (p HttpRequestParser) ParseRequest(r *http.Request) (tokenVerifier.VerifyTokenRequest, error) {
-	var entity tokenVerifier.VerifyTokenRequest
+func (p HttpRequestParser) ParseRequest(r *http.Request) tokenVerifier.VerifyTokenRequest {
+	entity := tokenVerifier.VerifyTokenRequest{
+		AccessToken:   r.URL.Query().Get("access_token"),
+		RequiredScope: r.URL.Query().Get("required_scope"),
+	}
 
-	err := json.NewDecoder(r.Body).Decode(&entity)
-	return entity, err
+	return entity
 }

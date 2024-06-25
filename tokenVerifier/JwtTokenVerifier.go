@@ -45,6 +45,10 @@ func (j JwtTokenVerifier) VerifyToken(request VerifyTokenRequest) (bool, string)
 		return false, "Token audience not valid"
 	}
 
+	if !verifyScope(request.AccessToken, request.RequiredScope) {
+		return false, "Token does not contain necessary scope: " + request.RequiredScope
+	}
+
 	return true, ""
 
 }
@@ -66,6 +70,14 @@ func verifyAudience(tokenString string, expectedAudience string) bool {
 		return false
 	}
 	return tokenAudience == expectedAudience
+}
+
+func verifyScope(tokenString string, expectedScope string) bool {
+	tokenScope, err := extractUnverifiedClaims(tokenString, "scope")
+	if err != nil {
+		return false
+	}
+	return tokenScope == expectedScope
 }
 
 func extractUnverifiedClaims(tokenString string, key string) (string, error) {

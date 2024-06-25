@@ -11,7 +11,7 @@ type HttpServer struct {
 }
 
 type RequestParser interface {
-	ParseRequest(r *http.Request) (tokenVerifier.VerifyTokenRequest, error)
+	ParseRequest(r *http.Request) tokenVerifier.VerifyTokenRequest
 }
 
 func (h HttpServer) Serve(verifier tokenVerifier.TokenVerifier) {
@@ -27,11 +27,7 @@ func (h HttpServer) Serve(verifier tokenVerifier.TokenVerifier) {
 			return
 		}
 
-		request, err := parser.ParseRequest(r)
-		if err != nil {
-			http.Error(w, err.Error(), 400)
-			return
-		}
+		request := parser.ParseRequest(r)
 
 		tokenValid, msg := verifier.VerifyToken(request)
 
