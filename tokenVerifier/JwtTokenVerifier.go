@@ -88,11 +88,15 @@ func verifyScope(tokenString string, expectedScope string) bool {
 		return false
 	}
 
-	if tokenScope != expectedScope {
-		log.Printf("Invalid scope\nExpected: %s\nActual: %s", expectedScope, tokenScope)
-		return false
+	scopeList := strings.Split(tokenScope, " ")
+
+	for _, scope := range scopeList {
+		if scope == expectedScope {
+			return true
+		}
 	}
-	return true
+	log.Printf("Invalid scope\nExpected: %s\nActual: %s", expectedScope, tokenScope)
+	return false
 }
 
 func extractUnverifiedClaims(tokenString string, key string) (string, error) {
