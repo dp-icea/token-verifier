@@ -20,7 +20,7 @@ func (h HttpServer) Serve(verifier tokenVerifier.TokenVerifier) {
 
 	http.HandleFunc("/validate", func(w http.ResponseWriter, r *http.Request) {
 		log.Println("Token validate requested")
-		log.Println(r)
+		log.Println(*r)
 
 		if r.Method != "GET" {
 			http.Error(w, "Invalid request method", 405)

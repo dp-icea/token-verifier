@@ -61,6 +61,7 @@ func verifySigning(tokenString string, publicKey *rsa.PublicKey) bool {
 	err := jwt.SigningMethodRS256.Verify(strings.Join(parts[0:2], "."), parts[2], publicKey)
 
 	if err != nil {
+		log.Println("Invalid token signature")
 		return false
 	}
 	return true
@@ -70,17 +71,28 @@ func verifyAudience(tokenString string, expectedAudience string) bool {
 
 	tokenAudience, err := extractUnverifiedClaims(tokenString, "aud")
 	if err != nil {
+		log.Println(err.Error())
 		return false
 	}
-	return tokenAudience == expectedAudience
+	if tokenAudience != expectedAudience {
+		log.Printf("Invalid audience\nExpected: %s\nActual: %s", expectedAudience, tokenAudience)
+		return false
+	}
+	return true
 }
 
 func verifyScope(tokenString string, expectedScope string) bool {
 	tokenScope, err := extractUnverifiedClaims(tokenString, "scope")
 	if err != nil {
+		log.Println(err.Error())
 		return false
 	}
-	return tokenScope == expectedScope
+
+	if tokenScope != expectedScope {
+		log.Printf("Invalid scope\nExpected: %s\nActual: %s", expectedScope, tokenScope)
+		return false
+	}
+	return true
 }
 
 func extractUnverifiedClaims(tokenString string, key string) (string, error) {
