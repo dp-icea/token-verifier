@@ -37,6 +37,7 @@ func (h HttpServer) Serve(verifier tokenVerifier.TokenVerifier) {
 
 		return
 	})
+	log.Println("Starting server on port :" + conf.Port)
 	log.Fatal(http.ListenAndServe(":"+conf.Port, nil))
 
 }

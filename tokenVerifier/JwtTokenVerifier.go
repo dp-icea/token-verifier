@@ -55,6 +55,9 @@ func (j JwtTokenVerifier) VerifyToken(request VerifyTokenRequest) (bool, string)
 
 func verifySigning(tokenString string, publicKey *rsa.PublicKey) bool {
 	parts := strings.Split(tokenString, ".")
+	if len(parts) != 3 {
+		return false
+	}
 	err := jwt.SigningMethodRS256.Verify(strings.Join(parts[0:2], "."), parts[2], publicKey)
 
 	if err != nil {
