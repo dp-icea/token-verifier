@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
 	"strings"
+	"time"
 	conf "token-verifier/config"
 
 	"github.com/golang-jwt/jwt"
@@ -39,6 +41,10 @@ func (j JwtTokenVerifier) VerifyToken(request VerifyTokenRequest) (bool, string)
 
 	if !verifySigning(request.AccessToken, j.publicKey) {
 		return false, "Token signature not valid"
+	}
+
+	if !verifyExpiration(request.AccessToken) {
+		return false, "Token is expired"
 	}
 
 	if !verifyAudience(request.AccessToken, config.ExpectedAudience) {
@@ -99,6 +105,20 @@ func verifyScope(tokenString string, expectedScope string) bool {
 	return false
 }
 
+func verifyExpiration(tokenString string) bool {
+	expiration, err := extractUnverifiedClaims(tokenString, "exp")
+	if err != nil {
+		log.Println(err)
+		return false
+	}
+	exp, err := strconv.ParseInt(expiration, 10, 64)
+	if err != nil {
+		log.Println(err)
+		return false
+	}
+	return exp >= time.Now().Unix()
+}
+
 func extractUnverifiedClaims(tokenString string, key string) (string, error) {
 	var value string
 	token, _, err := new(jwt.Parser).ParseUnverified(tokenString, jwt.MapClaims{})
@@ -107,12 +127,17 @@ func extractUnverifiedClaims(tokenString string, key string) (string, error) {
 	}
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok {
-		value = fmt.Sprint(claims[key])
+		switch claims[key].(type) {
+		case float64, float32:
+			value = fmt.Sprintf("%.0f", claims[key])
+		default:
+			value = fmt.Sprint(claims[key])
+		}
+
 	}
 
 	if value == "" {
 		return "", fmt.Errorf("invalid token payload")
 	}
-	log.Println(value)
 	return value, nil
 }
