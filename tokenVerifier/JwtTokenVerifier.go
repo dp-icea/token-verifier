@@ -37,8 +37,6 @@ func New() JwtTokenVerifier {
 
 func (j JwtTokenVerifier) VerifyToken(request VerifyTokenRequest) (bool, string) {
 
-	config := conf.GetGlobalConfig()
-
 	if !verifySigning(request.AccessToken, j.publicKey) {
 		return false, "Token signature not valid"
 	}
@@ -47,7 +45,7 @@ func (j JwtTokenVerifier) VerifyToken(request VerifyTokenRequest) (bool, string)
 		return false, "Token is expired"
 	}
 
-	if !verifyAudience(request.AccessToken, config.ExpectedAudience) {
+	if !verifyAudience(request.AccessToken, request.ExpectedAudience) {
 		return false, "Token audience not valid"
 	}
 

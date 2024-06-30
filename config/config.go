@@ -12,14 +12,12 @@ var lock = &sync.Mutex{}
 type Config struct {
 	Port                 string
 	RsaPublicKeyFileName string
-	ExpectedAudience     string
 }
 
 func newInstance() *Config {
 	return &Config{
 		Port:                 getEnv("PORT", "9097"),
 		RsaPublicKeyFileName: getEnv("RSA_PUBLIC_KEY_FILE", ""),
-		ExpectedAudience:     getEnv("EXPECTED_AUDIENCE", ""),
 	}
 }
 

@@ -1,8 +1,9 @@
 package tokenVerifier
 
 type VerifyTokenRequest struct {
-	AccessToken   string `json:"access_token"`
-	RequiredScope string `json:"required_scope"`
+	AccessToken      string `json:"access_token"`
+	RequiredScope    string `json:"required_scope"`
+	ExpectedAudience string `json:"expected_audience"`
 }
 
 type VerifyTokenResponse struct {

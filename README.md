@@ -25,6 +25,5 @@ This service is meant to be used by all USS to verify if the Access token they a
 Configuration settings are set in the .env file
 
 Some key configurations are:
-- EXPECTED_AUDIENCE is the name of the institution running this service
 - RSA_PUBLIC_KEY_FILE is the path to the RSA public key file
 
