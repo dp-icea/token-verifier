@@ -12,6 +12,5 @@ RUN go install ./...
 FROM alpine:latest
 COPY --from=build /go/bin/token-verifier /usr/bin
 COPY .env.example .env
-RUN mkdir /certs
-COPY certs/auth2.pem /cert.pem
+COPY certs /certs
 ENTRYPOINT ["/usr/bin/token-verifier"]
